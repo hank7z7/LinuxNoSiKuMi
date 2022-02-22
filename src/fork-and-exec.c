@@ -6,8 +6,11 @@
 static void
 child ()
 {
+  char *args[] = { "/bin/echo", "hello", NULL };
   printf ("I'm child! my pid is %d.\n", getpid ());
-  exit (EXIT_SUCCESS);
+  fflush (stdout);
+  execve ("/bin/echo", args, NULL);
+  err (EXIT_FAILURE, "exec() failed");
 }
 
 static void
@@ -27,12 +30,12 @@ main (void)
     err (EXIT_FAILURE, "fork() failed");
   if (ret == 0)
     {
-      // child process came here because fork() returns 0 for child process
+      // child process came here because for() return 0 for child process
       child ();
     }
   else
     {
-      // parent process came here because for() returns the pid of newly
+      // parent process came here because fork() returns the pid of newly
       // created child process (> 1)
       parent (ret);
     }
